@@ -1,0 +1,131 @@
+# ER Diagram Instructions for Fashion E-commerce Database
+
+## Entities and Attributes
+
+1. Country_3NF
+   - CountryID (PK)
+   - CountryName
+
+2. Material_3NF
+   - MaterialID (PK)
+   - MaterialName
+
+3. Pattern_3NF
+   - PatternID (PK)
+   - PatternName
+
+4. ShippingMethod_3NF
+   - ShippingID (PK)
+   - MethodName
+   - Cost
+
+5. OrderStatus_3NF
+   - StatusID (PK)
+   - StatusName
+
+6. PaymentMethod_3NF
+   - PaymentID (PK)
+   - MethodName
+
+7. City_3NF
+   - CityID (PK)
+   - CityName
+   - CountryID (FK)
+
+8. Brand_3NF
+   - BrandID (PK)
+   - BrandName
+   - CountryID (FK)
+
+9. Category_3NF
+   - CategoryID (PK)
+   - CategoryName
+   - ParentCategoryID (FK, self-referencing)
+
+10. Customer_3NF
+    - CustomerID (PK)
+    - CustomerFirstName
+    - CustomerLastName
+    - CustomerEmail
+    - CustomerPhone
+    - CustomerAddress
+    - CityID (FK)
+
+11. Supplier_3NF
+    - SupplierID (PK)
+    - SupplierName
+    - SupplierAddress
+    - SupplierContactPerson
+    - SupplierPhone
+    - SupplierEmail
+    - CityID (FK)
+
+12. Product_3NF
+    - ProductID (PK)
+    - ProductName
+    - ProductDescription
+    - CategoryID (FK)
+    - BrandID (FK)
+    - Size
+    - Color
+    - MaterialID (FK)
+    - PatternID (FK)
+    - UnitPrice
+    - StockQuantity
+    - SupplierID (FK)
+
+13. Order_3NF
+    - OrderID (PK)
+    - CustomerID (FK)
+    - OrderDate
+    - ShippingID (FK)
+    - StatusID (FK)
+    - PaymentID (FK)
+
+14. OrderItem_3NF
+    - OrderID (PK, FK)
+    - ProductID (PK, FK)
+    - UnitPrice
+    - DiscountPercentage
+
+## Relationships with Cardinality
+
+1. Country_3NF (1) -- (0..*) City_3NF
+2. Country_3NF (1) -- (0..*) Brand_3NF 
+3. City_3NF (1) -- (0..*) Customer_3NF
+4. City_3NF (1) -- (0..*) Supplier_3NF
+5. Category_3NF (0..1) -- (0..*) Category_3NF (self-referencing: parent-child)
+6. Category_3NF (1) -- (0..*) Product_3NF
+7. Brand_3NF (1) -- (0..*) Product_3NF
+8. Material_3NF (1) -- (0..*) Product_3NF
+9. Pattern_3NF (1) -- (0..*) Product_3NF
+10. Supplier_3NF (1) -- (0..*) Product_3NF
+11. Customer_3NF (1) -- (0..*) Order_3NF
+12. ShippingMethod_3NF (1) -- (0..*) Order_3NF
+13. OrderStatus_3NF (1) -- (0..*) Order_3NF
+14. PaymentMethod_3NF (1) -- (0..*) Order_3NF
+15. Order_3NF (1) -- (0..*) OrderItem_3NF
+16. Product_3NF (1) -- (0..*) OrderItem_3NF
+
+## Diagram Layout Suggestions
+
+- Group related entities together:
+  - Reference entities (Country, Material, Pattern, ShippingMethod, OrderStatus, PaymentMethod) at the top
+  - Location entities (Country, City) on the left
+  - Product-related entities (Category, Brand, Material, Pattern, Supplier, Product) in the center
+  - Customer and Order entities (Customer, Order, OrderItem) on the right
+  
+- Use different colors to distinguish different types of entities:
+  - Reference entities (light blue)
+  - Location entities (green)
+  - Product entities (orange)
+  - Order entities (purple)
+  
+- Show cardinality clearly using crow's foot notation:
+  - One (1): single line
+  - Zero or One (0..1): circle and single line
+  - One or Many (1..*): single line and crow's foot
+  - Zero or Many (0..*): circle, single line, and crow's foot
+
+- Mark primary keys with PK and foreign keys with FK
+- Use solid lines for identifying relationships and dashed lines for non-identifying relationships 
