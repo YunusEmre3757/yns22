@@ -1,0 +1,108 @@
+<div class="orders-container">
+  <div class="container">
+    <h1 class="page-title">Siparişlerim</h1>
+    
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner></mat-spinner>
+    </div>
+    
+    <div *ngIf="!loading && orders.length === 0" class="empty-orders">
+      <mat-icon class="empty-icon">shopping_basket</mat-icon>
+      <h2>Henüz Siparişiniz Bulunmuyor</h2>
+      <p>Siparişleriniz burada listelenecektir.</p>
+      <button mat-raised-button color="primary" routerLink="/products">
+        Alışverişe Başla
+      </button>
+    </div>
+    
+    <div *ngIf="!loading && orders.length > 0" class="orders-list">
+      <mat-card *ngFor="let order of orders" class="order-card">
+        <mat-card-header class="order-header" (click)="navigateToOrderDetail(order.id)">
+          <div class="order-summary">
+            <div class="order-number">
+              <span class="label">Sipariş No:</span>
+              <span class="value">#{{ order.id }}</span>
+            </div>
+            <div class="order-date">
+              <span class="label">Tarih:</span>
+              <span class="value">{{ formatDate(order.date) }}</span>
+            </div>
+            <div class="order-price">
+              <span class="label">Tutar:</span>
+              <span class="value">{{ order.totalPrice | currency:'₺' }}</span>
+            </div>
+            <div class="order-status">
+              <span class="label">Durumu:</span>
+              <span [class]="'status-chip ' + getStatusClass(order.status)">
+                <mat-icon>{{ getStatusIcon(order.status) }}</mat-icon>
+                {{ order.status }}
+              </span>
+            </div>
+          </div>
+          <div class="expand-button">
+            <mat-icon>{{ expandedOrderId === order.id ? 'expand_less' : 'expand_more' }}</mat-icon>
+          </div>
+        </mat-card-header>
+        
+        <div class="order-details" *ngIf="expandedOrderId === order.id">
+          <mat-card-content>
+            <div class="detail-section">
+              <h3>Teslimat Adresi</h3>
+              <p class="address">{{ order.address }}</p>
+            </div>
+            
+            <div class="detail-section" *ngIf="order.trackingNumber">
+              <h3>Kargo Takip No</h3>
+              <p class="tracking-number">{{ order.trackingNumber }}</p>
+            </div>
+            
+            <div class="detail-section">
+              <h3>Sipariş Özeti</h3>
+              <div class="order-items">
+                <div *ngFor="let item of order.items" class="order-item">
+                  <div class="item-image" (click)="navigateToProduct(item.productId)">
+                    <img [src]="item.image" [alt]="item.productName">
+                  </div>
+                  <div class="item-details">
+                    <h4 class="item-name" (click)="navigateToProduct(item.productId)">{{ item.productName }}</h4>
+                    <div class="item-price-quantity">
+                      <span class="item-price">{{ item.price | currency:'₺' }}</span>
+                      <span class="item-quantity">{{ item.quantity }} adet</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="detail-section total-section">
+              <div class="total-line">
+                <span>Ara Toplam:</span>
+                <span>{{ order.totalPrice | currency:'₺' }}</span>
+              </div>
+              <div class="total-line">
+                <span>Kargo Ücreti:</span>
+                <span>Ücretsiz</span>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="total-line grand-total">
+                <span>Toplam:</span>
+                <span>{{ order.totalPrice | currency:'₺' }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+          
+          <mat-card-actions *ngIf="order.status === 'Beklemede'">
+            <button mat-raised-button color="warn" (click)="cancelOrder(order.id, $event)">
+              <mat-icon>cancel</mat-icon>
+              Siparişi İptal Et
+            </button>
+            <button mat-raised-button color="primary" (click)="navigateToOrderDetail(order.id, $event)">
+              <mat-icon>visibility</mat-icon>
+              Detaylar
+            </button>
+          </mat-card-actions>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div> 

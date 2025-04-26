@@ -1,0 +1,85 @@
+<div class="container">
+  <button mat-button (click)="goBack()" class="back-button">
+    <mat-icon>arrow_back</mat-icon> Geri
+  </button>
+
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && product" class="product-detail">
+    <div class="product-image">
+      <img [src]="product.imageUrl || 'assets/images/no-image.jpg'" alt="{{ product.name }}">
+    </div>
+
+    <div class="product-info">
+      <h1>{{ product.name }}</h1>
+      
+      <div class="rating" *ngIf="product.rating">
+        <span *ngFor="let star of [1,2,3,4,5]">
+          <mat-icon>{{ star <= product.rating ? 'star' : 'star_border' }}</mat-icon>
+        </span>
+        <span class="review-count" *ngIf="product.reviewCount">({{ product.reviewCount }} değerlendirme)</span>
+      </div>
+
+      <p class="price">{{ product.price | currency:'₺' }}</p>
+      
+      <div *ngIf="product.discount" class="discount">
+        <span class="original-price">{{ product.discountedPrice | currency:'₺' }}</span>
+        <span class="discount-badge">{{ product.discount }}% İndirim</span>
+      </div>
+
+      <p class="description">{{ product.description }}</p>
+
+      <div class="availability" [ngClass]="product.stock > 0 ? (product.stock < 5 ? 'low-stock' : 'in-stock') : 'out-of-stock'">
+        <mat-icon>{{ product.stock > 0 ? 'check_circle' : 'cancel' }}</mat-icon>
+        
+        <span *ngIf="product.stock > 0 && product.stock < 5" class="low-stock-warning">
+          <strong>Acele et!</strong> Son {{ product.stock }} adet kaldı!
+        </span>
+        
+        <span *ngIf="product.stock >= 5">
+          Stokta mevcut
+        </span>
+        
+        <span *ngIf="product.stock <= 0">Stokta Yok</span>
+      </div>
+
+      <div class="quantity-selector" *ngIf="product.stock > 0">
+        <button mat-icon-button (click)="decrementQuantity()" [disabled]="quantity <= 1">
+          <mat-icon>remove</mat-icon>
+        </button>
+        <span class="quantity">{{ quantity }}</span>
+        <button mat-icon-button (click)="incrementQuantity()" [disabled]="quantity >= product.stock">
+          <mat-icon>add</mat-icon>
+        </button>
+        <span class="quantity-info" *ngIf="quantity >= product.stock">
+          Maksimum stok miktarına ulaştınız
+        </span>
+      </div>
+
+      <button mat-raised-button color="primary" [disabled]="product.stock <= 0" (click)="addToCart()" class="add-to-cart-btn">
+        <mat-icon>shopping_cart</mat-icon> SEPETE EKLE
+      </button>
+
+      <button mat-raised-button [color]="isInFavorites ? 'warn' : 'basic'" (click)="toggleFavorite()" class="favorite-btn">
+        <mat-icon>{{ isInFavorites ? 'favorite' : 'favorite_border' }}</mat-icon> 
+        {{ isInFavorites ? 'FAVORİLERDEN ÇIKAR' : 'FAVORİLERE EKLE' }}
+      </button>
+
+      <div class="specifications" *ngIf="product.specifications">
+        <h3>Özellikler</h3>
+        <table>
+          <tr *ngFor="let spec of product.specifications | keyvalue">
+            <td>{{ spec.key }}</td>
+            <td>{{ spec.value }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div> 

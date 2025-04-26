@@ -1,0 +1,130 @@
+<div class="container">
+  <h1 class="page-title">Ödeme</h1>
+
+  <div class="checkout-content">
+    <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="checkout-form">
+      <div class="form-section">
+        <h2>Kişisel Bilgiler</h2>
+        <mat-divider></mat-divider>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Ad</mat-label>
+            <input matInput formControlName="firstName" required>
+            <mat-error *ngIf="checkoutForm.get('firstName')?.hasError('required')">Ad gereklidir</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Soyad</mat-label>
+            <input matInput formControlName="lastName" required>
+            <mat-error *ngIf="checkoutForm.get('lastName')?.hasError('required')">Soyad gereklidir</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>E-posta</mat-label>
+            <input matInput formControlName="email" required type="email">
+            <mat-error *ngIf="checkoutForm.get('email')?.hasError('required')">E-posta gereklidir</mat-error>
+            <mat-error *ngIf="checkoutForm.get('email')?.hasError('email')">Geçerli bir e-posta adresi giriniz</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Telefon</mat-label>
+            <input matInput formControlName="phone" required>
+            <mat-icon matSuffix>phone</mat-icon>
+            <mat-error *ngIf="checkoutForm.get('phone')?.hasError('required')">Telefon numarası gereklidir</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Teslimat Adresi</h2>
+        <mat-divider></mat-divider>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Adres</mat-label>
+          <textarea matInput formControlName="address" required rows="3"></textarea>
+          <mat-icon matSuffix>home</mat-icon>
+          <mat-error *ngIf="checkoutForm.get('address')?.hasError('required')">Adres gereklidir</mat-error>
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Şehir</mat-label>
+            <input matInput formControlName="city" required>
+            <mat-error *ngIf="checkoutForm.get('city')?.hasError('required')">Şehir gereklidir</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Posta Kodu</mat-label>
+            <input matInput formControlName="postalCode" required>
+            <mat-icon matSuffix>markunread_mailbox</mat-icon>
+            <mat-error *ngIf="checkoutForm.get('postalCode')?.hasError('required')">Posta kodu gereklidir</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Ödeme Bilgileri</h2>
+        <mat-divider></mat-divider>
+        
+        <div class="payment-methods">
+          <mat-radio-group formControlName="paymentMethod" required>
+            <mat-radio-button value="creditCard">Kredi Kartı</mat-radio-button>
+            <mat-radio-button value="payAtDoor">Kapıda Ödeme</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <ng-container *ngIf="checkoutForm.get('paymentMethod')?.value === 'creditCard'">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Kart Numarası</mat-label>
+              <input matInput formControlName="cardNumber" required placeholder="1234 5678 9012 3456">
+              <mat-icon matSuffix>credit_card</mat-icon>
+              <mat-error *ngIf="checkoutForm.get('cardNumber')?.hasError('required')">Kart numarası gereklidir</mat-error>
+              <mat-error *ngIf="checkoutForm.get('cardNumber')?.hasError('pattern')">Geçersiz kart numarası</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Son Kullanma Tarihi</mat-label>
+              <input matInput formControlName="cardExpiry" required placeholder="MM/YY">
+              <mat-icon matSuffix>date_range</mat-icon>
+              <mat-error *ngIf="checkoutForm.get('cardExpiry')?.hasError('required')">Son kullanma tarihi gereklidir</mat-error>
+              <mat-error *ngIf="checkoutForm.get('cardExpiry')?.hasError('pattern')">Geçersiz format (MM/YY)</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>CVV</mat-label>
+              <input matInput formControlName="cardCvv" required maxlength="4">
+              <mat-icon matSuffix matTooltip="Kartın arkasındaki 3 veya 4 haneli güvenlik kodu">help</mat-icon>
+              <mat-error *ngIf="checkoutForm.get('cardCvv')?.hasError('required')">CVV gereklidir</mat-error>
+              <mat-error *ngIf="checkoutForm.get('cardCvv')?.hasError('pattern')">Geçersiz CVV</mat-error>
+            </mat-form-field>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="order-summary">
+        <h2>Sipariş Özeti</h2>
+        <mat-divider></mat-divider>
+        <div class="summary-row">
+          <span>Toplam:</span>
+          <span class="price">{{ cartTotal | currency:'₺' }}</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" mat-stroked-button (click)="backToCart()">
+          <mat-icon>arrow_back</mat-icon> SEPETE DÖN
+        </button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="loading || checkoutForm.invalid">
+          <mat-spinner *ngIf="loading" diameter="24"></mat-spinner>
+          <span *ngIf="!loading"><mat-icon>check_circle</mat-icon> SİPARİŞİ TAMAMLA</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

@@ -1,0 +1,149 @@
+<div class="home-container">
+ <!-- Hero Slider Section -->
+ <section class="hero-slider">
+   <div class="slider-container">
+     <div class="slide" *ngFor="let slide of slides; let i = index" 
+          [class.active]="currentSlide === i"
+          [attr.data-image]="slide.image">
+       <div class="slide-image" [style.background-image]="'url(' + slide.image + ')'"></div>
+       <div class="slide-overlay"></div>
+       <div class="slide-content">
+         <h2>{{ slide.title }}</h2>
+         <p>{{ slide.description }}</p>
+         <a [routerLink]="slide.link" class="slide-button">
+           <span>Ürünleri İncele</span>
+           <mat-icon>arrow_forward</mat-icon>
+         </a>
+       </div>
+     </div>
+   </div>
+
+   <!-- Slider Controls -->
+   <div class="slider-controls">
+     <button class="prev-button" (click)="previousSlide()">
+       <mat-icon>chevron_left</mat-icon>
+     </button>
+     <div class="slider-dots">
+       <div
+         class="dot"
+         *ngFor="let slide of slides; let i = index"
+         [class.active]="currentSlide === i"
+         (click)="goToSlide(i)"
+       ></div>
+     </div>
+     <button class="next-button" (click)="nextSlide()">
+       <mat-icon>chevron_right</mat-icon>
+     </button>
+   </div>
+ </section>
+
+ <!-- Featured Categories -->
+ <section class="featured-categories">
+   <div class="section-header">
+     <h2>Popüler Kategoriler</h2>
+     <p>Sizin için seçtiğimiz özel koleksiyonlar</p>
+   </div>
+   <div class="category-grid">
+     <div class="category-card" *ngFor="let category of categories; let i = index" [class.animate-up]="true" [style.animation-delay]="i * 0.1 + 's'">
+       <div class="category-image">
+       </div>
+       <div class="category-content">
+         <h3>{{category.name}}</h3>
+         <p>{{category.description}}</p>
+         <a [routerLink]="['/categories', category.id]" class="category-button">
+           <span>Keşfet</span>
+           <mat-icon>arrow_forward</mat-icon>
+         </a>
+       </div>
+     </div>
+   </div>
+ </section>
+
+ <!-- New Arrivals -->
+ <section class="new-arrivals">
+   <div class="section-header">
+     <h2>Yeni Gelenler</h2>
+     <p>En yeni ürünlerimizi keşfedin</p>
+   </div>
+   <div class="product-grid">
+     <div class="product-card" *ngFor="let product of newArrivals; let i = index" [class.animate-up]="true" [style.animation-delay]="i * 0.1 + 's'">
+       <div class="product-image">
+         <img [src]="product.image" [alt]="product.name">
+         <div class="product-actions">
+           <button class="action-button" (click)="addToCart(product)" matTooltip="Sepete Ekle">
+             <mat-icon>add_shopping_cart</mat-icon>
+           </button>
+           <button class="action-button" [routerLink]="['/products', product.id]" matTooltip="Detayları Gör">
+             <mat-icon>visibility</mat-icon>
+           </button>
+         </div>
+       </div>
+       <div class="product-info">
+         <h3>{{product.name}}</h3>
+         <div class="product-meta">
+           <span class="price">{{product.price | currency:'TRY'}}</span>
+           <div class="rating" *ngIf="product.rating">
+             <mat-icon>star</mat-icon>
+             <span>{{product.rating}}</span>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+ </section>
+
+ <!-- Featured Collection -->
+ <section class="featured-collection parallax-section">
+   <div class="parallax-content">
+     <div class="collection-content">
+       <h2 class="animate-up">Öne Çıkan Koleksiyon</h2>
+       <p class="animate-up delay-1">Sezonun en çok tercih edilen parçaları</p>
+       <div class="collection-stats animate-up delay-2">
+         <div class="stat-item">
+           <span class="stat-number">500+</span>
+           <span class="stat-label">Ürün</span>
+         </div>
+         <div class="stat-item">
+           <span class="stat-number">50+</span>
+           <span class="stat-label">Marka</span>
+         </div>
+         <div class="stat-item">
+           <span class="stat-number">%30</span>
+           <span class="stat-label">İndirim</span>
+         </div>
+       </div>
+       <a routerLink="/products" class="collection-button animate-up delay-3">
+         <span>Koleksiyonu Keşfet</span>
+         <mat-icon>arrow_forward</mat-icon>
+       </a>
+     </div>
+   </div>
+ </section>
+
+ <!-- Newsletter -->
+ <section class="newsletter">
+   <div class="newsletter-content">
+     <div class="newsletter-text">
+       <h2 class="animate-up">Yeniliklerden Haberdar Olun</h2>
+       <p class="animate-up delay-1">Özel kampanyalar ve yeni koleksiyonlardan ilk siz haberdar olun</p>
+     </div>
+     <form (ngSubmit)="subscribeNewsletter()" class="newsletter-form animate-up delay-2">
+       <mat-form-field appearance="outline">
+         <mat-label>E-posta Adresiniz</mat-label>
+         <input matInput type="email" [(ngModel)]="email" name="email" required email>
+         <mat-icon matSuffix>mail</mat-icon>
+         <mat-error *ngIf="newsletterForm?.get('email')?.hasError('required')">
+           E-posta adresi gereklidir
+         </mat-error>
+         <mat-error *ngIf="newsletterForm?.get('email')?.hasError('email')">
+           Geçerli bir e-posta adresi giriniz
+         </mat-error>
+       </mat-form-field>
+       <button mat-raised-button color="primary" type="submit">
+         <span>Abone Ol</span>
+         <mat-icon>send</mat-icon>
+       </button>
+     </form>
+   </div>
+ </section>
+</div>
